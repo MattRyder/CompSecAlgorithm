@@ -10,7 +10,9 @@ namespace CompSecAlgorithm
     {
         static void Main(string[] args)
         {
-            PublicKeyEncryption pke = new PublicKeyEncryption();
+            Feist feist = new Feist("1234567890ABCDEF");
+            feist.Encrypt("This is my plaintext block of text, isn't it great?");
         }
+    
     }
 }
