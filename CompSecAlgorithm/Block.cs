@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CompSecAlgorithm
 {
-    class Block
+    /// <summary>
+    /// A block of plain/cipher text with helper methods for access/mutation
+    /// </summary>
+    public class Block
     {
         /// <summary>
         /// The data held by the Block
@@ -85,6 +85,11 @@ namespace CompSecAlgorithm
             byte[] temp = Left;
             Left = Right;
             Right = temp;
+        }
+
+        public override string ToString()
+        {
+            return System.Text.Encoding.UTF8.GetString(Data);
         }
     }
 }
