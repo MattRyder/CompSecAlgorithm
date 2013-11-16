@@ -22,29 +22,29 @@ namespace CompSecAlgorithm
         /// <param name="keyString">The key to use for this instance</param>
         public Key(string keyString) 
         {
+            while(keyString.Length % 4 != 0)
+                keyString += new char();
+
             KeyBytes = System.Text.Encoding.UTF8.GetBytes(keyString);
         }
 
-        /// <summary>
-        /// Generates the keys used for each round
-        /// </summary>
-        /// <returns></returns>
         public List<uint> GetRoundKeys()
         {
-            int bytesPerKey = KeyBytes.Length / 4;
+            // Rounds = How many 32-bit keys found in the Key string
+            int roundCount = KeyBytes.Length / 4;
             List<uint> roundKeys = new List<uint>();
 
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < roundCount; i++)
             {
-                byte[] roundKeyBytes = new byte[bytesPerKey];
+                byte[] roundKeyBytes = new byte[4];
                 uint roundKey = 0;
 
-                Array.Copy(KeyBytes, bytesPerKey * i, roundKeyBytes, 0, bytesPerKey);
+                Array.Copy(KeyBytes, i * 4, roundKeyBytes, 0, 4);
                 Array.Reverse(roundKeyBytes);
+
                 roundKey = BitConverter.ToUInt32(roundKeyBytes, 0);
                 roundKeys.Add(roundKey);
             }
-
             return roundKeys;
         }
     }

@@ -11,7 +11,6 @@ namespace CompSecAlgorithm
     {
         static void Main(string[] args)
         {
-            bool isPlaintext;
             string keyword = "", input = "", output = "", fileData = "";
             
             Feist feist;
@@ -51,24 +50,27 @@ Options:
 
             if (args[0] == "-e")
             {
+                // Encrypt argument selected
                 string ciphertext = feist.Encrypt(fileData);
                 System.Diagnostics.Debug.WriteLine(ciphertext);
                 fileWriter.Write(ciphertext);
+                Console.WriteLine("File Encrypted. Saved to: " + output);
             }
             else if(args[0] == "-d")
             {
+                // Decrypt argument selected
                 string plaintext = feist.Decrypt(fileData);
                 System.Diagnostics.Debug.WriteLine(plaintext);
                 fileWriter.Write(plaintext);
+                Console.WriteLine("File Decrypted. Saved to: " + output);
             }
             else
             {
+                // Invalid option selected, show usage and suspend
                 Console.Write("Invalid option selected\n" + usage);
-                Console.Read();
             }
 
             fileWriter.Close();
-            Console.Read();
         }
     
     }
