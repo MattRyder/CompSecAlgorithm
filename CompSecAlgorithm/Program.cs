@@ -34,10 +34,18 @@ Options:
                 Console.WriteLine(usage);
                 return;
             }
+            else if(args[1].Length < 10 || args[1].Length > 40)
+            {
+                Console.Write("Invalid password length. Password must be between 10-40 characters.\n" + usage);
+                return;
+            }
 
             keyword = args[1];
             input   = args[2];
             output  = args[3];
+
+            // For Testing Porpoises:
+            var time = System.Diagnostics.Stopwatch.StartNew(); 
 
             // Setup the program for IO, encryption
             feist = new Feist(keyword);
@@ -51,8 +59,10 @@ Options:
             if (args[0] == "-e")
             {
                 // Encrypt argument selected
+
                 string ciphertext = feist.Encrypt(fileData);
-                System.Diagnostics.Debug.WriteLine(ciphertext);
+                Console.WriteLine("Time Taken: " + time.ElapsedMilliseconds + "ms");
+
                 fileWriter.Write(ciphertext);
                 Console.WriteLine("File Encrypted. Saved to: " + output);
             }
@@ -60,9 +70,9 @@ Options:
             {
                 // Decrypt argument selected
                 string plaintext = feist.Decrypt(fileData);
-                System.Diagnostics.Debug.WriteLine(plaintext);
                 fileWriter.Write(plaintext);
                 Console.WriteLine("File Decrypted. Saved to: " + output);
+                Console.WriteLine("Time Taken: " + time.ElapsedMilliseconds + "ms");
             }
             else
             {
