@@ -35,11 +35,11 @@ namespace CompSecAlgorithm
         public Feist(string passcode)
         {
             this.Passcode = passcode;
-            this.BlockSize = 8;
+            this.BlockSize = 16;
         }
 
         /// <summary>
-        /// Constructs a new instance of the Feist class
+        /// Constructs a new instance of the Feist class, with a custom blocksize
         /// </summary>
         /// <param name="passcode">Passcode used in this instance</param>
         /// <param name="blockSize">Size of the blocks to use in this instance</param>
@@ -78,7 +78,7 @@ namespace CompSecAlgorithm
         {
             int blockPointer = 0;
             string postCipherText = "";
-            List<uint> roundKeys = new Key(Passcode).GetRoundKeys();
+            List<ulong> roundKeys = new Key(Passcode).GetRoundKeys();
 
             // Pad the string with '\0' to make it a multiple of <blocksize>
             while(text.Length % BlockSize != 0)
@@ -88,7 +88,7 @@ namespace CompSecAlgorithm
             if(!isPlaintext)
                 roundKeys.Reverse();
 
-            byte[] textBytes = Encoding.ASCII.GetBytes(text);
+            byte[] textBytes = Encoding.UTF8.GetBytes(text);
 
             // Iterate through the text, moving <blocksize> bytes per iteration
             while(blockPointer < textBytes.Length)
@@ -102,7 +102,7 @@ namespace CompSecAlgorithm
                     textBlock.Swap();
 
                 // Apply each of the round keys to the text
-                foreach(uint roundKey in roundKeys)
+                foreach(ulong roundKey in roundKeys)
                     textBlock = Round(textBlock, roundKey);
 
                 // Append to the output string
@@ -111,7 +111,7 @@ namespace CompSecAlgorithm
 
                 blockPointer += BlockSize;
             }
-            return postCipherText.Trim((char)0);
+            return postCipherText.Trim('\0');
         }
 
         /// <summary>
@@ -120,9 +120,9 @@ namespace CompSecAlgorithm
         /// <param name="block">The block to encrypt/decrypt</param>
         /// <param name="roundKey">Round key to apply as the round function</param>
         /// <returns>The next block in the round sequence</returns>
-        private Block Round(Block block, uint roundKey)
+        private Block Round(Block block, ulong roundKey)
         {
-            int roundFunction = 0;
+            ulong roundFunction = 0;
 
             Block roundBlock = new Block(block.BlockSize);
             BitArray keyBits = new BitArray(BitConverter.GetBytes(roundKey)),
@@ -131,8 +131,8 @@ namespace CompSecAlgorithm
             roundBlock.Left = block.Right;
 
             // Cast the AND round function bits to an int, set R(i+1) as L(i) XOR f
-            roundFunction = ToInteger(funcBits);
-            roundBlock.Right = BitConverter.GetBytes(ToInteger(block.LeftBlockBits) ^ roundFunction);
+            roundFunction = ToInteger64(funcBits);
+            roundBlock.Right = BitConverter.GetBytes(ToInteger64(block.LeftBlockBits) ^ roundFunction);
 
             return roundBlock;
         }
@@ -141,12 +141,12 @@ namespace CompSecAlgorithm
         /// Helper method to convert BitArray to integer representation
         /// </summary>
         /// <param name="array">BitArray to convert</param>
-        /// <returns>A 32-bit integer value of the array</returns>
-        private int ToInteger(BitArray array)
+        /// <returns>A 64-bit integer value of the array</returns>
+        private ulong ToInteger64(BitArray array)
         {
-            int[] tempIntArray = new int[1];
-            array.CopyTo(tempIntArray, 0);
-            return tempIntArray[0];
+            byte[] byteArray = new byte[8];
+            array.CopyTo(byteArray, 0);
+            return BitConverter.ToUInt64(byteArray, 0);
         }
     }
 }

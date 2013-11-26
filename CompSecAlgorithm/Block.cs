@@ -5,7 +5,7 @@ using System.Linq;
 namespace CompSecAlgorithm
 {
     /// <summary>
-    /// A block of plain/cipher text with helper methods for access/mutation
+    /// A block of plain/cipher text with helper methods for access/mutation.
     /// </summary>
     public class Block
     {
@@ -63,6 +63,7 @@ namespace CompSecAlgorithm
         /// <summary>
         /// A block of data
         /// </summary>
+        /// <param name="blockSize">Size in bytes of this block</param>
         public Block(int blockSize)
         {
             Data = new byte[blockSize];
@@ -87,6 +88,10 @@ namespace CompSecAlgorithm
             Right = temp;
         }
 
+        /// <summary>
+        /// Converts the Block to a UTF-8 string
+        /// </summary>
+        /// <returns>String representation of this block</returns>
         public override string ToString()
         {
             return System.Text.Encoding.UTF8.GetString(Data);

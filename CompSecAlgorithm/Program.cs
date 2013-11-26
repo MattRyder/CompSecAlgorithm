@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CompSecAlgorithm
 {
+    /// <summary>
+    /// Main entry point for this demonstration
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
@@ -17,6 +16,7 @@ namespace CompSecAlgorithm
             StreamReader fileReader;
             StreamWriter fileWriter;
 
+            // Store the usage text as a const string
             const string usage =
             @"
 Computer Systems Security Algorithm
@@ -36,6 +36,7 @@ Options:
             }
             else if(args[1].Length < 10 || args[1].Length > 40)
             {
+                // Output usage if the password is too short/long
                 Console.Write("Invalid password length. Password must be between 10-40 characters.\n" + usage);
                 return;
             }
@@ -43,9 +44,6 @@ Options:
             keyword = args[1];
             input   = args[2];
             output  = args[3];
-
-            // For Testing Porpoises:
-            var time = System.Diagnostics.Stopwatch.StartNew(); 
 
             // Setup the program for IO, encryption
             feist = new Feist(keyword);
@@ -59,10 +57,7 @@ Options:
             if (args[0] == "-e")
             {
                 // Encrypt argument selected
-
                 string ciphertext = feist.Encrypt(fileData);
-                Console.WriteLine("Time Taken: " + time.ElapsedMilliseconds + "ms");
-
                 fileWriter.Write(ciphertext);
                 Console.WriteLine("File Encrypted. Saved to: " + output);
             }
@@ -72,7 +67,6 @@ Options:
                 string plaintext = feist.Decrypt(fileData);
                 fileWriter.Write(plaintext);
                 Console.WriteLine("File Decrypted. Saved to: " + output);
-                Console.WriteLine("Time Taken: " + time.ElapsedMilliseconds + "ms");
             }
             else
             {
